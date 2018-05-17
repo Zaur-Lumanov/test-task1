@@ -12,9 +12,6 @@
 import Mock from "mockjs";
 import axios from "axios";
 
-window.axios = axios;
-window.Mock = Mock;
-
 const data = {
   form: {
     login: "",
