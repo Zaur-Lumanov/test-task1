@@ -94,6 +94,8 @@ const data = {
 export default {
   name: "Main",
   data() {
+    data.username = localStorage.login;
+
     return data;
   },
   methods: {
