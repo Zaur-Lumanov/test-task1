@@ -9,6 +9,12 @@
 </template>
 
 <script>
+import Mock from "mockjs";
+import axios from "axios";
+
+window.axios = axios;
+window.Mock = Mock;
+
 const data = {
   form: {
     login: "",
@@ -19,18 +25,39 @@ const data = {
 export default {
   name: "Login",
   data() {
+    if (localStorage.login) {
+      this.$router.push("main");
+    }
+
+    Mock.mock(/auth/, options => {
+      return {
+        token: "testToken",
+        name: "Tim Cook"
+      };
+    });
+
     return data;
   },
 
   methods: {
-    submit(e) {
+    async submit(e) {
       e.preventDefault();
 
-      localStorage.login = this.form.login;
-      this.$router.push("main");
+      const { data: response } = await axios.post("/auth", {
+        login: this.form.login,
+        password: this.form.password
+      });
 
-      this.form.login = "";
-      this.form.password = "";
+      if (response.token) {
+        localStorage.login = this.form.login;
+
+        this.$router.push("main");
+
+        this.form.login = "";
+        this.form.password = "";
+      } else {
+        alert("Invalid login or password");
+      }
 
       return false;
     }
